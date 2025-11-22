@@ -2,6 +2,7 @@
 // IDE used: Visual Studio Code
 #include <iostream>
 #include <vector>
+#include <queue>
 using namespace std;
 
 const int SIZE = 7;
@@ -45,6 +46,30 @@ public:
             cout << endl;
         }
     }
+
+    void BFS(int start) { 
+    vector<bool> visited(SIZE, false); 
+    queue<int> q;
+    
+    visited[start] = true; 
+    q.push(start); 
+
+    while(!q.empty()) { 
+        int currNode = q.front(); 
+        q.pop(); 
+
+        cout << currNode << " "; 
+
+        for(auto &edge : adjList[currNode]) { 
+            if(!visited[edge.first]) { 
+                visited[edge.first] = true;
+                q.push(edge.first);
+            }
+        }
+    }
+
+}
+
 };
 
 int main() {
@@ -62,3 +87,4 @@ int main() {
 
     return 0;
 }
+
