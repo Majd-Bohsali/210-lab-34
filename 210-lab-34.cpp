@@ -152,6 +152,38 @@ public:
         }
         return dist;
     }
+
+    vector<Edge> minimumSpanningTree() {
+        const int INF = 1e9;
+        vector<int> key(SIZE, INF); 
+        vector<int> parent(SIZE, -1);   
+        vector<bool> inMST(SIZE, false);  
+        key[0] = 0;
+        for (int count = 0; count < SIZE - 1; ++count) {
+            int u = -1;
+            for (int v = 0; v < SIZE; ++v) {
+                if (!inMST[v] && (u == -1 || key[v] < key[u])) {
+                    u = v;
+                }
+            }
+            inMST[u] = true;
+            for (auto &p : adjList[u]) {
+                int v = p.first;
+                int w = p.second;
+                if (!inMST[v] && w < key[v]) {
+                    key[v] = w;
+                    parent[v] = u;
+                }
+            }
+        }
+        vector<Edge> mst;
+        for (int v = 1; v < SIZE; ++v) {
+            if (parent[v] != -1) {
+                mst.push_back({parent[v], v, key[v]});
+            }
+        }
+        return mst;
+    }
 };
 
 int main() {
@@ -192,6 +224,13 @@ int main() {
     vector<int> shortest = graph.dijkstra(0);
     for (int i = 0; i < shortest.size(); i++) {
         cout << "0 -> " << i << " : " << shortest[i] << endl;
+    }
+
+    vector<Edge> mst = graph.minimumSpanningTree();
+    cout << "\nMinimum Spanning Tree edges:\n";
+    for (const auto &e : mst) {
+        cout << "Edge from " << e.src << " to " << e.dest
+             << " with travel time: " << e.weight << " minutes\n";
     }
     return 0;
 }
