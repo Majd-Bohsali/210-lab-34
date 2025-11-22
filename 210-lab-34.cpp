@@ -49,48 +49,83 @@ public:
         }
     }
 
-    void BFS(int start) { 
+    void BFS(int start, const vector<string>& names) { 
         vector<bool> visited(SIZE, false); 
         queue<int> q;
-        
+
+        cout << "Layer-by-Layer Street Inspection (BFS) from Intersection " << start
+            << " (" << names[start] << "):\n";
+        cout << "Purpose: Analyzing which intersections are 1 turn, 2 turns, etc., away\n";
+        cout << "=================================================\n";
+
         visited[start] = true; 
         q.push(start); 
 
         while(!q.empty()) { 
-            int currNode = q.front(); 
+            int curr = q.front(); 
             q.pop(); 
 
-            cout << currNode << " "; 
+            cout << "Checking Intersection " << curr 
+                << " (" << names[curr] << ")\n";
 
-            for(auto &edge : adjList[currNode]) { 
-                if(!visited[edge.first]) { 
-                    visited[edge.first] = true;
-                    q.push(edge.first);
+            for (auto &edge : adjList[curr]) { 
+                int nxt = edge.first;
+                int time = edge.second;
+
+                if (!visited[nxt]) {
+                    cout << "  -> Next reachable intersection: " << nxt 
+                        << " (" << names[nxt] 
+                        << ") - Travel time: " << time << " minutes\n";
+
+                    visited[nxt] = true;
+                    q.push(nxt);
                 }
             }
         }
+        cout << endl;
     }
 
-    void DFS(int start) { 
+    void DFS(int start, const vector<string>& names) { 
         vector<bool> visited(SIZE, false); 
         stack<int> s; 
+
+        cout << "Driving Route Trace (DFS) from Intersection " << start 
+            << " (" << names[start] << "):\n";
+        cout << "Purpose: Tracing how a car might travel deep into the street network\n";
+        cout << "=======================================\n";
 
         visited[start] = true; 
         s.push(start); 
         
         while(!s.empty()) { 
-            int currNode = s.top(); 
+            int curr = s.top(); 
             s.pop(); 
 
-            cout << currNode << " "; 
+            cout << "Inspecting Intersection " << curr << " (" 
+                << names[curr] << ")\n";
 
-            for(auto &edge : adjList[currNode]) { 
-                if(!visited[edge.first]) { 
-                    visited[edge.first] = true;
-                    s.push(edge.first);
+            // list neighbors with arrows BEFORE pushing
+            for (auto &edge : adjList[curr]) { 
+                int nxt = edge.first;
+                int time = edge.second;
+
+                if (!visited[nxt]) {
+                    cout << "  -> Possible route to Intersection " << nxt 
+                        << " (" << names[nxt] 
+                        << ") - Travel time: " << time << " minutes\n";
+                }
+            }
+
+            // Now push neighbors
+            for (auto &edge : adjList[curr]) { 
+                int nxt = edge.first;
+                if (!visited[nxt]) {
+                    visited[nxt] = true;
+                    s.push(nxt);
                 }
             }
         }
+        cout << endl;
     }
 };
 
@@ -125,19 +160,8 @@ int main() {
         cout << endl;
     }
 
-    cout << "------------------------------------------------------\n";
-    cout << "Emergency Route Trace using DFS from Intersection 0 (Central Square):\n";
-    cout << "Purpose: Simulate a fire truck leaving Central Square and exploring\n";
-    cout << "connected streets as far as possible before backtracking.\n";
-    cout << "Visit order (intersection IDs):\n";
-    graph.DFS(0);
-
-    cout << "\nLayer-by-Layer Street Check using BFS from Intersection 0 (Central Square):\n";
-    cout << "Purpose: City planners inspect which intersections are 1 turn away,\n";
-    cout << "2 turns away, and so on from Central Square.\n";
-    cout << "Visit order (intersection IDs):\n";
-    graph.BFS(0);
-
+    graph.DFS(0, intersectionNames);
+    graph.BFS(0, intersectionNames);
     return 0;
 }
 
