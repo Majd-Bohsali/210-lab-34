@@ -4,9 +4,10 @@
 #include <vector>
 #include <queue>
 #include <stack>
+#include <string>  
 using namespace std;
 
-const int SIZE = 7;
+const int SIZE = 10;
 
 struct Edge {
     int src, dest, weight;
@@ -97,20 +98,46 @@ int main() {
     // Creates a vector of graph edges/weights
     vector<Edge> edges = {
         // (x, y, w) —> edge from x to y having weight w
-        {0,1,12},{0,2,8},{0,3,21},{2,3,6},{2,6,2},{5,6,6},{4,5,9},{2,4,4},{2,5,5}
+        {0,1,8}, {0,4,17}, {0,7,5}, {1,2,6}, {1,5,12}, {2,3,9}, {2,8,4},
+        {3,6,11}, {4,5,7}, {4,9,13}, {5,7,10}, {6,8,15}, {7,9,3}, {8,9,6}
     };
 
     // Creates graph
     Graph graph(edges);
 
-    // Prints adjacency list representation of graph
-    graph.printGraph();
-    cout << "DFS starting from vertex 0" << endl; 
+     vector<string> intersectionNames = {
+        "Central Square", "Maple & 1st", "Oak & 2nd", "Pine & 3rd", "River Bridge",
+        "Hill Market", "Stadium Entrance", "Library Plaza", "City Park Gate", "Train Station Plaza"
+    };
+
+
+    cout << "City Street Network Topology (Intersections and Roads)" << endl << endl; 
+
+    for (int i = 0; i < SIZE; ++i) {
+        cout << "Intersection " << i << " (" << intersectionNames[i] << ") connects to:\n";
+        for (const auto &edge : graph.adjList[i]) {
+            int neighbor = edge.first;
+            int minutes  = edge.second;
+            cout << "   -> Intersection " << neighbor << " ("
+                 << intersectionNames[neighbor]
+                 << ") - Travel time: " << minutes << " minutes\n";
+        }
+        cout << endl;
+    }
+
+    cout << "------------------------------------------------------\n";
+    cout << "Emergency Route Trace using DFS from Intersection 0 (Central Square):\n";
+    cout << "Purpose: Simulate a fire truck leaving Central Square and exploring\n";
+    cout << "connected streets as far as possible before backtracking.\n";
+    cout << "Visit order (intersection IDs):\n";
     graph.DFS(0);
-    cout << endl;
-    cout << "BFS starting from vertex 0" << endl; 
+
+    cout << "\nLayer-by-Layer Street Check using BFS from Intersection 0 (Central Square):\n";
+    cout << "Purpose: City planners inspect which intersections are 1 turn away,\n";
+    cout << "2 turns away, and so on from Central Square.\n";
+    cout << "Visit order (intersection IDs):\n";
     graph.BFS(0);
-    cout << endl;
+
     return 0;
 }
 
