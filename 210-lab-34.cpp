@@ -127,6 +127,31 @@ public:
         }
         cout << endl;
     }
+
+    vector<int> dijkstra(int start) {
+        const int INF = 1e9;
+        vector<int> dist(SIZE, INF);
+        vector<bool> visited(SIZE, false);
+        dist[start] = 0;
+        for (int i = 0; i < SIZE; i++) {
+            int u = -1;
+            for (int v = 0; v < SIZE; v++) {
+                if (!visited[v] && (u == -1 || dist[v] < dist[u])) {
+                    u = v;
+                }
+            }
+            visited[u] = true;
+            for (auto &edge : adjList[u]) {
+                int v = edge.first;
+                int w = edge.second;
+
+                if (dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                }
+            }
+        }
+        return dist;
+    }
 };
 
 int main() {
@@ -162,6 +187,11 @@ int main() {
 
     graph.DFS(0, intersectionNames);
     graph.BFS(0, intersectionNames);
+
+    cout << "\nShortest path from node 0:\n";
+    vector<int> shortest = graph.dijkstra(0);
+    for (int i = 0; i < shortest.size(); i++) {
+        cout << "0 -> " << i << " : " << shortest[i] << endl;
+    }
     return 0;
 }
-
