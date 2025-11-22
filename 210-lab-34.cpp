@@ -197,40 +197,71 @@ int main() {
     // Creates graph
     Graph graph(edges);
 
-     vector<string> intersectionNames = {
+    vector<string> intersectionNames = {
         "Central Square", "Maple & 1st", "Oak & 2nd", "Pine & 3rd", "River Bridge",
         "Hill Market", "Stadium Entrance", "Library Plaza", "City Park Gate", "Train Station Plaza"
     };
 
+    int choice = -1;
 
-    cout << "City Street Network Topology (Intersections and Roads)" << endl << endl; 
-
-    for (int i = 0; i < SIZE; ++i) {
-        cout << "Intersection " << i << " (" << intersectionNames[i] << ") connects to:\n";
-        for (const auto &edge : graph.adjList[i]) {
-            int neighbor = edge.first;
-            int minutes  = edge.second;
-            cout << "   -> Intersection " << neighbor << " ("
-                 << intersectionNames[neighbor]
-                 << ") - Travel time: " << minutes << " minutes\n";
-        }
+    while (choice != 0) {
+        cout << "\nCity Street Network Menu:\n";
+        cout << "[1] Display street network\n";
+        cout << "[2] Explore reachable intersections (BFS)\n";
+        cout << "[3] Explore deep route (DFS)\n";
+        cout << "[4] Calculate shortest paths from Intersection 0\n";
+        cout << "[5] Find Minimum Spanning Tree\n";
+        cout << "[0] Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
         cout << endl;
-    }
-
-    graph.DFS(0, intersectionNames);
-    graph.BFS(0, intersectionNames);
-
-    cout << "\nShortest path from node 0:\n";
-    vector<int> shortest = graph.dijkstra(0);
-    for (int i = 0; i < shortest.size(); i++) {
-        cout << "0 -> " << i << " : " << shortest[i] << endl;
-    }
-
-    vector<Edge> mst = graph.minimumSpanningTree();
-    cout << "\nMinimum Spanning Tree edges:\n";
-    for (const auto &e : mst) {
-        cout << "Edge from " << e.src << " to " << e.dest
-             << " with travel time: " << e.weight << " minutes\n";
+        switch (choice) {
+            case 1: {
+                cout << "City Street Network Topology (Intersections and Roads)\n\n";
+                for (int i = 0; i < SIZE; ++i) {
+                    cout << "Intersection " << i << " (" << intersectionNames[i] << ") connects to:\n";
+                    for (const auto &edge : graph.adjList[i]) {
+                        int neighbor = edge.first;
+                        int minutes  = edge.second;
+                        cout << "   -> Intersection " << neighbor << " ("
+                             << intersectionNames[neighbor]
+                             << ") - Travel time: " << minutes << " minutes\n";
+                    }
+                    cout << endl;
+                }
+                break;
+            }
+            case 2:
+                graph.BFS(0, intersectionNames);
+                break;
+            case 3:
+                graph.DFS(0, intersectionNames);
+                break;
+            case 4: {
+                cout << "Shortest path from node 0:\n";
+                vector<int> shortest = graph.dijkstra(0);
+                for (int i = 0; i < (int)shortest.size(); i++) {
+                    cout << "0 -> " << i << " : " << shortest[i] << endl;
+                }
+                cout << endl;
+                break;
+            }
+            case 5: {
+                vector<Edge> mst = graph.minimumSpanningTree();
+                cout << "Minimum Spanning Tree edges:\n";
+                for (const auto &e : mst) {
+                    cout << "Edge from " << e.src << " to " << e.dest
+                         << " with travel time: " << e.weight << " minutes\n";
+                }
+                cout << endl;
+                break;
+            }
+            case 0:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice. Try again.\n";
+        }
     }
     return 0;
 }
